@@ -1,0 +1,91 @@
+{% extends "payroll/base.html" %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Employee Management</h1>
+    <a href="{% url 'add_employee' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="bi bi-person-plus me-1"></i> Add Employee
+    </a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Employee List</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
+               data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots-vertical text-gray-400"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="#">Export to Excel</a></li>
+                <li><a class="dropdown-item" href="#">Print List</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Advanced Filters</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="employeeTable" width="100%" cellspacing="0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Salary</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar me-3">
+                                    <div class="bg-primary text-white rounded-circle p-2" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                                        {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">{{ employee.user.first_name }} {{ employee.user.last_name }}</h6>
+                                    <small class="text-muted">{{ employee.user.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                {{ employee.department.name }}
+                            </span>
+                        </td>
+                        <td>₹{{ employee.salary }}</td>
+                        <td>{{ employee.join_date|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="badge bg-{% if employee.is_active %}success{% else %}danger{% endif %}">
+                                {% if employee.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex">
+                                <a href="{% url 'payslip_list' employee.id %}" class="btn btn-sm btn-info me-2" 
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="View Payroll">
+                                    <i class="bi bi-cash-stack"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-warning me-2" 
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-danger" 
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
